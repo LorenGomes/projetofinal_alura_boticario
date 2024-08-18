@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+  mongo:
+    image: 'mongo:latest'
+    container_name: 'mongo'
+    ports:
+      - '27100:27017' 
+  api:
+    container_name: 'api'
+    restart: always
+    build: './api'
+    ports:
+      - '80:3000'    
+    depends_on:
+      - 'mongo'
+    environment:
+      DOCKER_MONGO_HOSTNAME: 'mongo'
+    
+  web:
+    container_name: 'web'
+    image: 'nginx:latest'
+    ports:
+      - '8082:80'
+    volumes:
+      - './web:/usr/share/nginx/html'
+      - './web/docker/config:/usr/share/nginx/html/js/config'      
+    depends_on:
+      - 'api'
+    
+    
